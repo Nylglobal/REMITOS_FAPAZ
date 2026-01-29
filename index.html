@@ -3,45 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>Generador de Remito</title>
+
 <style>
 body{font-family:Arial;background:#eee;padding:20px}
 .container{max-width:900px;margin:auto;background:white;padding:20px}
+
 .header{display:flex;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:5px}
 .r-box{text-align:center;border:1px solid #000;padding:5px;width:150px}
 .r-box h1{margin:0;font-size:40px}
 .small{font-size:11px}
+
 table{width:100%;border-collapse:collapse;margin-top:10px}
 th,td{border:1px solid #000;padding:5px;text-align:center}
-  th:first-child, td:first-child { 
-  width: 80px; 
-}
-th:nth-child(2), td:nth-child(2) { 
-  width: auto; 
-}
+th:first-child, td:first-child { width: 80px; }
+th:nth-child(2), td:nth-child(2) { width: auto; }
 
 .no-print{}
 .print-area{display:none}
+
 .box{border:1px solid #000;height:90px;margin-top:10px;padding:5px}
+
 .copia{page-break-after:always}
 .copia:last-child{page-break-after:auto}
-  
 
 @media print {
-  .copia {
-    height: 27.7cm;     /* alto real de A4 menos márgenes */
+  body{margin:0}
+  .container{padding:0}
+
+  .corte{
     page-break-after: always;
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-  }
-
-  .container {
-    padding: 0;
+    break-after: page;
   }
 }
-
 </style>
 </head>
 
@@ -78,9 +71,11 @@ Factura vinculada: <input id="fc"><br>
 </div>
 
 <!-- IMPRESION -->
-<div class="print-area" id="printArea">
+<div class="print-area">
 
+<!-- ORIGINAL -->
 <div class="copia">
+
 <div class="header">
   <div style="display:flex;align-items:center;gap:10px;">
     <img src="logo.png" style="height:80px">
@@ -96,7 +91,7 @@ Factura vinculada: <input id="fc"><br>
   <div class="r-box">
     <h1>R</h1>
     <div class="small">cod. 91</div>
-    <div class="small">Documento no válido como factura de compra</div>
+    <div class="small">Documento no válido como factura</div>
     <b>Remito N° <span id="p_remito"></span></b>
   </div>
 </div>
@@ -107,9 +102,8 @@ Factura vinculada: <input id="fc"><br>
 Cliente: <span id="p_cliente"></span><br>
 CUIT: <span id="p_cuit"></span> - IVA: <span id="p_iva"></span><br>
 Domicilio: <span id="p_dom"></span><br>
-Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span>
+Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span><br>
 FC vinculada: <span id="p_fc"></span>
-
 </p>
 
 <table id="printTabla"></table>
@@ -124,13 +118,16 @@ FC vinculada: <span id="p_fc"></span>
 <div class="box" style="height:60px"></div>
 
 <hr>
-<div class="small">
+
+<div class="small corte">
 Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
 CAI:50372209069345 Vto. 12/09/2026
 </div>
 </div>
 
+<!-- DUPLICADO -->
 <div class="copia">
+
 <div class="header">
   <div style="display:flex;align-items:center;gap:10px;">
     <img src="logo.png" style="height:80px">
@@ -146,7 +143,7 @@ CAI:50372209069345 Vto. 12/09/2026
   <div class="r-box">
     <h1>R</h1>
     <div class="small">cod. 91</div>
-    <div class="small">Documento no válido como factura de compra</div>
+    <div class="small">Documento no válido como factura</div>
     <b>Remito N° <span id="p_remito2"></span></b>
   </div>
 </div>
@@ -157,30 +154,31 @@ CAI:50372209069345 Vto. 12/09/2026
 Cliente: <span id="p_cliente2"></span><br>
 CUIT: <span id="p_cuit2"></span> - IVA: <span id="p_iva2"></span><br>
 Domicilio: <span id="p_dom2"></span><br>
-Responsable: <span id="p_resp2"></span> - Tel: <span id="p_telcli2"></span>
-FC vinculada: <span id="p_fc"></span>
-
+Responsable: <span id="p_resp2"></span> - Tel: <span id="p_telcli2"></span><br>
+FC vinculada: <span id="p_fc2"></span>
 </p>
 
 <table id="printTabla2"></table>
 
 <h4>SELLO TRANSPORTISTA</h4>
-<div class="box" style="height:60px"></div>
+<div class="box"></div>
 
 <h4>DETALLES DE LA RECEPCIÓN</h4>
-<div class="box" style="height:60px"></div>
+<div class="box" style="height:120px"></div>
 
 <h4>RECIBÍ CONFORME</h4>
 <div class="box" style="height:60px"></div>
 
 <hr>
-<div class="small">
+
+<div class="small corte">
 Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
 CAI:50372209069345 Vto. 12/09/2026
 </div>
 </div>
 
 <button onclick="window.print()">IMPRIMIR</button>
+
 </div>
 </div>
 
@@ -191,6 +189,7 @@ fetch("empresa.json")
 .then(r=>r.json())
 .then(d=>{
   empresa=d;
+
   p_empresa.innerText=d.razon;
   p_cuit_emp.innerText=d["Cuit:"];
   p_iva_emp.innerText=d.IVA;
@@ -215,11 +214,13 @@ function agregarFila(){
 function generar(){
   let filas=document.querySelectorAll("#tabla tr");
   let html="<tr><th>Cantidad</th><th>Detalle</th></tr>";
+
   for(let i=1;i<filas.length;i++){
     let c=filas[i].cells[0].children[0].value;
     let d=filas[i].cells[1].children[0].value;
     html+=`<tr><td>${c}</td><td>${d}</td></tr>`;
   }
+
   printTabla.innerHTML=html;
   printTabla2.innerHTML=html;
 
@@ -248,7 +249,3 @@ agregarFila();
 
 </body>
 </html>
-
-
-
-
