@@ -26,6 +26,21 @@ th:nth-child(2), td:nth-child(2) { width: auto; }
 .copia{page-break-after:always}
 .copia:last-child{page-break-after:auto}
 
+  .firmas{
+  display:flex;
+  gap:20px;
+  margin-top:10px;
+}
+
+.mini{
+  flex:1;
+}
+
+.smallbox{
+  height:60px;
+}
+
+
 @media print {
   body{margin:0}
   .container{padding:0}
@@ -111,14 +126,22 @@ FC vinculada: <span id="p_fc"></span>
 
 <table id="printTabla"></table>
 
-<h4>SELLO TRANSPORTISTA</h4>
-<div class="box"></div>
+<div class="firmas">
+  <div class="mini">
+    <h4>SELLO TRANSPORTISTA</h4>
+    <div class="box smallbox"></div>
+  </div>
+
+  <div class="mini">
+    <h4>RECIBÍ CONFORME</h4>
+    <div class="box smallbox"></div>
+  </div>
+</div>
 
 <h4>DETALLES DE LA RECEPCIÓN</h4>
-<div class="box" style="height:120px"></div>
+<div class="box smallbox"></div>
+60px"></div>
 
-<h4>RECIBÍ CONFORME</h4>
-<div class="box" style="height:60px"></div>
 
 <hr>
 
@@ -252,4 +275,5 @@ agregarFila();
 
 </body>
 </html>
+
 
