@@ -12,11 +12,19 @@ body{font-family:Arial;background:#eee;padding:20px}
 .small{font-size:11px}
 table{width:100%;border-collapse:collapse;margin-top:10px}
 th,td{border:1px solid #000;padding:5px;text-align:center}
+  th:first-child, td:first-child { 
+  width: 80px; 
+}
+th:nth-child(2), td:nth-child(2) { 
+  width: auto; 
+}
+
 .no-print{}
 .print-area{display:none}
 .box{border:1px solid #000;height:90px;margin-top:10px;padding:5px}
 .copia{page-break-after:always}
 .copia:last-child{page-break-after:auto}
+  
 
 @media print{
   .no-print{display:none}
@@ -221,3 +229,4 @@ agregarFila();
 
 </body>
 </html>
+
