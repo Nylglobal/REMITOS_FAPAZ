@@ -26,10 +26,22 @@ th:nth-child(2), td:nth-child(2) {
 .copia:last-child{page-break-after:auto}
   
 
-@media print{
-  .no-print{display:none}
-  .print-area{display:block}
+@media print {
+  .copia {
+    height: 27.7cm;     /* alto real de A4 menos márgenes */
+    page-break-after: always;
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .container {
+    padding: 0;
+  }
 }
+
 </style>
 </head>
 
@@ -229,5 +241,6 @@ agregarFila();
 
 </body>
 </html>
+
 
 
