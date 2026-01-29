@@ -7,7 +7,7 @@
 <style>
 body{font-family:Arial;margin:20px;background:#f5f5f5;}
 .no-print{margin-bottom:20px;}
-input{width:100%;box-sizing:border-box;}
+input{width:100%;box-sizing:border-box;margin-bottom:4px;font-size:14px;}
 
 .remito{
   width:210mm;
@@ -24,48 +24,37 @@ input{width:100%;box-sizing:border-box;}
   align-items:center;
 }
 .header img{height:70px;}
-.titulo{font-size:22px;font-weight:bold;text-align:right;}
+.titulo{font-size:24px;font-weight:bold;text-align:right;}
 
-.datos{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;}
-.bloque{width:48%;border:1px solid #000;padding:5px;}
+.datos{display:flex;justify-content:space-between;margin-top:10px;font-size:14px;}
+.bloque{width:48%;border:1px solid #000;padding:6px;}
 
 table{width:100%;border-collapse:collapse;margin-top:10px;}
-th,td{border:1px solid #000;padding:4px;font-size:12px;}
+th,td{border:1px solid #000;padding:6px;font-size:14px;}
 th{background:#eee;}
 .cant{width:15%;}
 
-.firmas{
-  margin-top:10px;
-}
-.fila-firmas{
-  display:flex;
-  gap:10px;
-}
+.firmas{margin-top:10px;}
+.fila-firmas{display:flex;gap:10px;}
 .firma{
   border:1px solid #000;
   width:48%;
-  height:60px;
-  font-size:10px;
+  height:70px;
+  font-size:12px;
   text-align:center;
-  padding-top:2px;
+  padding-top:4px;
 }
 .detalles{
   border:1px solid #000;
-  height:60px;
+  height:70px;
   margin-top:5px;
-  font-size:10px;
-  padding:4px;
+  font-size:12px;
+  padding:6px;
 }
 
-.footer{
-  margin-top:5px;
-  font-size:9px;
-  text-align:center;
-}
+.footer{margin-top:6px;font-size:11px;text-align:center;}
 
-.page-break{
-  page-break-after:always;
-}
+.page-break{page-break-after:always;}
 
 @media print{
   body{background:white;margin:0;}
@@ -78,6 +67,7 @@ th{background:#eee;}
 <body>
 
 <div class="no-print">
+  Número de Remito: <input id="numRemito" placeholder="00000061">
   Cliente: <input id="cliente">
   CUIT: <input id="cuit">
   IVA: <input id="iva">
@@ -85,11 +75,12 @@ th{background:#eee;}
   Responsable: <input id="responsable">
   Tel: <input id="telefono">
   FC Vinculada: <input id="fc">
+
   <button onclick="agregarFila()">Agregar Item</button>
   <button onclick="generar()">Imprimir</button>
 
   <table id="tabla">
-    <tr><th>Cantidad</th><th>Detalle</th></tr>
+    <tr><th class="cant">Cantidad</th><th>Detalle</th></tr>
   </table>
 </div>
 
@@ -197,14 +188,12 @@ fetch("empresa.json")
   p_iva_emp.innerText=d.IVA;
   p_dir.innerText=d.direccion;
   p_tel.innerText=d.telefono;
-  p_remito.innerText=d.remito;
 
   p_empresa2.innerText=d.razon;
   p_cuit_emp2.innerText=d["Cuit:"];
   p_iva_emp2.innerText=d.IVA;
   p_dir2.innerText=d.direccion;
   p_tel2.innerText=d.telefono;
-  p_remito2.innerText=d.remito;
 });
 
 function agregarFila(){
@@ -216,11 +205,13 @@ function agregarFila(){
 function generar(){
   let filas=document.querySelectorAll("#tabla tr");
   let html="<tr><th class='cant'>Cantidad</th><th>Detalle</th></tr>";
+
   for(let i=1;i<filas.length;i++){
     let c=filas[i].cells[0].children[0].value;
     let d=filas[i].cells[1].children[0].value;
     html+=`<tr><td>${c}</td><td>${d}</td></tr>`;
   }
+
   printTabla.innerHTML=html;
   printTabla2.innerHTML=html;
 
@@ -243,6 +234,10 @@ function generar(){
   let f=new Date().toLocaleDateString();
   p_fecha.innerText=f;
   p_fecha2.innerText=f;
+
+  let nro = numRemito.value || "00000000";
+  p_remito.innerText = empresa.remito + "-" + nro;
+  p_remito2.innerText = empresa.remito + "-" + nro;
 
   document.querySelector(".no-print").style.display="none";
   document.querySelector(".print-area").style.display="block";
