@@ -2,191 +2,187 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Generador de Remito</title>
+<title>Remito FAPAZ</title>
 
 <style>
-body{font-family:Arial;background:#eee;padding:20px}
-.container{max-width:900px;margin:auto;background:white;padding:20px}
+body{font-family:Arial;margin:20px;background:#f5f5f5;}
+.no-print{margin-bottom:20px;}
+input{width:100%;box-sizing:border-box;}
 
-.header{display:flex;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:5px}
-.r-box{text-align:center;border:1px solid #000;padding:5px;width:150px}
-.r-box h1{margin:0;font-size:40px}
-.small{font-size:11px}
+.remito{
+  width:210mm;
+  min-height:148mm;
+  background:white;
+  padding:10mm;
+  margin:auto;
+  border:1px solid #000;
+}
 
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #000;padding:5px;text-align:center}
-th:first-child, td:first-child { width: 80px; }
-th:nth-child(2), td:nth-child(2) { width: auto; }
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header img{height:70px;}
+.titulo{font-size:22px;font-weight:bold;text-align:right;}
 
-.no-print{}
-.print-area{display:none}
+.datos{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;}
+.bloque{width:48%;border:1px solid #000;padding:5px;}
 
-.box{border:1px solid #000;margin-top:10px;padding:5px}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{border:1px solid #000;padding:4px;font-size:12px;}
+th{background:#eee;}
+.cant{width:15%;}
 
 .firmas{
-  display:flex;
-  gap:20px;
   margin-top:10px;
 }
-.mini{flex:1}
-.smallbox{height:60px}
+.fila-firmas{
+  display:flex;
+  gap:10px;
+}
+.firma{
+  border:1px solid #000;
+  width:48%;
+  height:60px;
+  font-size:10px;
+  text-align:center;
+  padding-top:2px;
+}
+.detalles{
+  border:1px solid #000;
+  height:60px;
+  margin-top:5px;
+  font-size:10px;
+  padding:4px;
+}
 
-@media print {
-  body{margin:0}
-  .container{padding:0}
-  button{display:none!important}
+.footer{
+  margin-top:5px;
+  font-size:9px;
+  text-align:center;
+}
 
-  .corte{
-    page-break-after: always;
-    break-after: page;
-  }
+.page-break{
+  page-break-after:always;
+}
+
+@media print{
+  body{background:white;margin:0;}
+  .no-print{display:none;}
+  .remito{border:none;margin:0;}
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
 <div class="no-print">
-<h2>Generador de Remito</h2>
+  Cliente: <input id="cliente">
+  CUIT: <input id="cuit">
+  IVA: <input id="iva">
+  Domicilio: <input id="domicilio">
+  Responsable: <input id="responsable">
+  Tel: <input id="telefono">
+  FC Vinculada: <input id="fc">
+  <button onclick="agregarFila()">Agregar Item</button>
+  <button onclick="generar()">Imprimir</button>
 
-Señores Clientes: <input id="cliente"><br>
-CUIT: <input id="cuit"><br>
-IVA:
-<select id="iva">
-<option>Resp. Inscripto</option>
-<option>Resp. Monotributo</option>
-<option>Exento</option>
-<option>No Resp.</option>
-<option>Consumidor Final</option>
-</select><br>
-Domicilio de entrega: <input id="domicilio"><br>
-Responsable de recepción: <input id="responsable"><br>
-Teléfono: <input id="telefono"><br>
-Factura vinculada: <input id="fc"><br>
-
-<h3>Items</h3>
-<table id="tabla">
-<tr><th>Cantidad</th><th>Detalle</th></tr>
-</table>
-<button onclick="agregarFila()">➕ Agregar ítem</button><br><br>
-<button onclick="generar()">Generar Remito</button>
+  <table id="tabla">
+    <tr><th>Cantidad</th><th>Detalle</th></tr>
+  </table>
 </div>
 
-<div class="print-area">
+<div class="print-area" style="display:none">
 
 <!-- ORIGINAL -->
-<div class="copia">
-<div class="header">
-  <div style="display:flex;gap:10px;align-items:center">
-    <img src="logo.png" style="height:80px">
-    <div>
+<div class="remito">
+  <div class="header">
+    <img src="logo.png">
+    <div class="titulo">REMITO<br><span id="p_remito"></span></div>
+  </div>
+
+  <div class="datos">
+    <div class="bloque">
       <b id="p_empresa"></b><br>
       CUIT: <span id="p_cuit_emp"></span><br>
       IVA: <span id="p_iva_emp"></span><br>
       <span id="p_dir"></span><br>
       Tel: <span id="p_tel"></span>
     </div>
+    <div class="bloque">
+      Cliente: <span id="p_cliente"></span><br>
+      CUIT: <span id="p_cuit"></span><br>
+      IVA: <span id="p_iva"></span><br>
+      Dom: <span id="p_dom"></span><br>
+      Resp: <span id="p_resp"></span><br>
+      Tel: <span id="p_telcli"></span><br>
+      FC: <span id="p_fc"></span><br>
+      Fecha: <span id="p_fecha"></span>
+    </div>
   </div>
 
-  <div class="r-box">
-    <h1>R</h1>
-    <div class="small">cod. 91</div>
-    <div class="small">Documento no válido como factura</div>
-    <b>Remito N° <span id="p_remito"></span></b>
+  <table id="printTabla"></table>
+
+  <div class="firmas">
+    <div class="fila-firmas">
+      <div class="firma">SELLO TRANSPORTISTA</div>
+      <div class="firma">RECIBÍ CONFORME</div>
+    </div>
+    <div class="detalles">DETALLES DE LA RECEPCIÓN</div>
   </div>
-</div>
 
-<div class="small" style="text-align:right;font-weight:bold">ORIGINAL</div>
-
-<p>
-Cliente: <span id="p_cliente"></span><br>
-CUIT: <span id="p_cuit"></span> - IVA: <span id="p_iva"></span><br>
-Domicilio: <span id="p_dom"></span><br>
-Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span><br>
-FC vinculada: <span id="p_fc"></span>
-</p>
-
-<table id="printTabla"></table>
-
-<div class="firmas">
-  <div class="mini">
-    <h4>SELLO TRANSPORTISTA</h4>
-    <div class="box smallbox"></div>
-  </div>
-  <div class="mini">
-    <h4>RECIBÍ CONFORME</h4>
-    <div class="box smallbox"></div>
+  <div class="footer">
+    Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
+    CAI:50372209069345 Vto. 12/09/2026
   </div>
 </div>
 
-<h4>DETALLES DE LA RECEPCIÓN</h4>
-<div class="box smallbox"></div>
-
-<hr>
-<div class="small corte">
-Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
-CAI:50372209069345 Vto. 12/09/2026
-</div>
-</div>
+<div class="page-break"></div>
 
 <!-- DUPLICADO -->
-<div class="copia">
-<div class="header">
-  <div style="display:flex;gap:10px;align-items:center">
-    <img src="logo.png" style="height:80px">
-    <div>
+<div class="remito">
+  <div class="header">
+    <img src="logo.png">
+    <div class="titulo">REMITO DUPLICADO<br><span id="p_remito2"></span></div>
+  </div>
+
+  <div class="datos">
+    <div class="bloque">
       <b id="p_empresa2"></b><br>
       CUIT: <span id="p_cuit_emp2"></span><br>
       IVA: <span id="p_iva_emp2"></span><br>
       <span id="p_dir2"></span><br>
       Tel: <span id="p_tel2"></span>
     </div>
+    <div class="bloque">
+      Cliente: <span id="p_cliente2"></span><br>
+      CUIT: <span id="p_cuit2"></span><br>
+      IVA: <span id="p_iva2"></span><br>
+      Dom: <span id="p_dom2"></span><br>
+      Resp: <span id="p_resp2"></span><br>
+      Tel: <span id="p_telcli2"></span><br>
+      FC: <span id="p_fc2"></span><br>
+      Fecha: <span id="p_fecha2"></span>
+    </div>
   </div>
 
-  <div class="r-box">
-    <h1>R</h1>
-    <div class="small">cod. 91</div>
-    <div class="small">Documento no válido como factura</div>
-    <b>Remito N° <span id="p_remito2"></span></b>
+  <table id="printTabla2"></table>
+
+  <div class="firmas">
+    <div class="fila-firmas">
+      <div class="firma">SELLO TRANSPORTISTA</div>
+      <div class="firma">RECIBÍ CONFORME</div>
+    </div>
+    <div class="detalles">DETALLES DE LA RECEPCIÓN</div>
   </div>
-</div>
 
-<div class="small" style="text-align:right;font-weight:bold">DUPLICADO TRANSPORTE</div>
-
-<p>
-Cliente: <span id="p_cliente2"></span><br>
-CUIT: <span id="p_cuit2"></span> - IVA: <span id="p_iva2"></span><br>
-Domicilio: <span id="p_dom2"></span><br>
-Responsable: <span id="p_resp2"></span> - Tel: <span id="p_telcli2"></span><br>
-FC vinculada: <span id="p_fc2"></span>
-</p>
-
-<table id="printTabla2"></table>
-
-<div class="firmas">
-  <div class="mini">
-    <h4>SELLO TRANSPORTISTA</h4>
-    <div class="box smallbox"></div>
-  </div>
-  <div class="mini">
-    <h4>RECIBÍ CONFORME</h4>
-    <div class="box smallbox"></div>
+  <div class="footer">
+    Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
+    CAI:50372209069345 Vto. 12/09/2026
   </div>
 </div>
 
-<h4>DETALLES DE LA RECEPCIÓN</h4>
-<div class="box smallbox"></div>
-
-<hr>
-<div class="small corte">
-Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
-CAI:50372209069345 Vto. 12/09/2026
-</div>
-</div>
-
-<button onclick="window.print()">IMPRIMIR</button>
-</div>
 </div>
 
 <script>
@@ -212,16 +208,19 @@ fetch("empresa.json")
 });
 
 function agregarFila(){
-  let r=tabla.insertRow();
+  let t=document.getElementById("tabla");
+  let r=t.insertRow();
   r.innerHTML="<td><input></td><td><input></td>";
 }
 
 function generar(){
-  let html="<tr><th>Cantidad</th><th>Detalle</th></tr>";
-  [...tabla.rows].slice(1).forEach(r=>{
-    html+=`<tr><td>${r.cells[0].children[0].value}</td><td>${r.cells[1].children[0].value}</td></tr>`;
-  });
-
+  let filas=document.querySelectorAll("#tabla tr");
+  let html="<tr><th class='cant'>Cantidad</th><th>Detalle</th></tr>";
+  for(let i=1;i<filas.length;i++){
+    let c=filas[i].cells[0].children[0].value;
+    let d=filas[i].cells[1].children[0].value;
+    html+=`<tr><td>${c}</td><td>${d}</td></tr>`;
+  }
   printTabla.innerHTML=html;
   printTabla2.innerHTML=html;
 
@@ -241,8 +240,13 @@ function generar(){
   p_telcli2.innerText=telefono.value;
   p_fc2.innerText=fc.value;
 
+  let f=new Date().toLocaleDateString();
+  p_fecha.innerText=f;
+  p_fecha2.innerText=f;
+
   document.querySelector(".no-print").style.display="none";
   document.querySelector(".print-area").style.display="block";
+  window.print();
 }
 
 agregarFila();
