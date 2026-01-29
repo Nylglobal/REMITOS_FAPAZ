@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Generador de Remito</title>
+<style>
+body{font-family:Arial;background:#eee;padding:20px}
+.container{max-width:900px;margin:auto;background:white;padding:20px}
+.header{display:flex;justify-content:space-between;border-bottom:2px solid #000}
+.r-box{text-align:center;border:1px solid #000;padding:5px;width:140px}
+.r-box h1{margin:0;font-size:40px}
+.small{font-size:11px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #000;padding:5px;text-align:center}
+.no-print{}
+.print-area{display:none}
+@media print{
+  .no-print{display:none}
+  .print-area{display:block}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="no-print">
+<h2>Generador de Remito</h2>
+<button onclick="guardarNumero()">Guardar N° para próximo</button>
+
+<h3>Cliente</h3>
+Señores Clientes: <input id="cliente"><br>
+CUIT: <input id="cuit"><br>
+IVA:
+<select id="iva">
+<option>Resp. Inscripto</option>
+<option>Resp. Monotributo</option>
+<option>Exento</option>
+<option>No Resp.</option>
+<option>Consumidor Final</option>
+</select><br>
+Domicilio de entrega: <input id="domicilio"><br>
+Responsable de recepción: <input id="responsable"><br>
+Teléfono: <input id="telefono"><br>
+
+<h3>Items</h3>
+<table id="tabla">
+<tr><th>Cantidad</th><th>Detalle</th></tr>
+</table>
+<button onclick="agregarFila()">➕ Agregar ítem</button>
+
+<h3>Transporte</h3>
+Sello Transportista: <input><br>
+Chofer: <input><br>
+Unidad: <input><br><br>
+
+<button onclick="generar()">Generar Remito</button>
+</div>
+
+<!-- IMPRESION -->
+<div class="print-area" id="printArea">
+<div class="header">
+  <div>
+    <b id="p_empresa"></b><br>
+    <span id="p_dir"></span><br>
+    Tel: <span id="p_tel"></span>
+  </div>
+
+  <div class="r-box">
+    <h1>R</h1>
+    <div class="small">cod. 91</div>
+    <div class="small">Documento no válido como factura de compra</div>
+    <b>Remito N° <span id="p_remito"></span></b>
+  </div>
+</div>
+
+<p>
+Cliente: <span id="p_cliente"></span><br>
+CUIT: <span id="p_cuit"></span> - IVA: <span id="p_iva"></span><br>
+Domicilio: <span id="p_dom"></span><br>
+Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span>
+</p>
+
+<table id="printTabla"></table>
+
+<p>
+Sello Transportista: ____________ <br>
+Chofer: ____________ Unidad: ____________
+</p>
+
+<p>Recibí Conforme ______________________</p>
+
+<hr>
+<div class="small">
+ORIGINAL - DUPLICADO TRANSPORTE<br>
+Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
+CAI:50372209069345 Vto. 12/09/2026
+</div>
+
+<button onclick="window.print()">IMPRIMIR</button>
+</div>
+</div>
+
+<script>
+let empresa = {};
+fetch("empresa.json")
+.then(r=>r.json())
+.then(d=>{
+empresa=d;
+p_empresa.innerText=d.razon;
+p_dir.innerText=d.direccion;
+p_tel.innerText=d.telefono;
+p_remito.innerText=d.remito;
+});
+
+function agregarFila(){
+let t=document.getElementById("tabla");
+let r=t.insertRow();
+r.innerHTML="<td><input></td><td><input></td>";
+}
+
+function generar(){
+let filas=document.querySelectorAll("#tabla tr");
+let html="<tr><th>Cantidad</th><th>Detalle</th></tr>";
+for(let i=1;i<filas.length;i++){
+let c=filas[i].cells[0].children[0].value;
+let d=filas[i].cells[1].children[0].value;
+html+=`<tr><td>${c}</td><td>${d}</td></tr>`;
+}
+printTabla.innerHTML=html;
+
+p_cliente.innerText=cliente.value;
+p_cuit.innerText=cuit.value;
+p_iva.innerText=iva.value;
+p_dom.innerText=domicilio.value;
+p_resp.innerText=responsable.value;
+p_telcli.innerText=telefono.value;
+
+document.querySelector(".no-print").style.display="none";
+document.querySelector(".print-area").style.display="block";
+}
+
+function guardarNumero(){
+let [p,n]=empresa.remito.split("-");
+n=(parseInt(n)+1).toString().padStart(8,"0");
+empresa.remito=p+"-"+n;
+alert("Próximo remito: "+empresa.remito);
+}
+agregarFila();
+</script>
+
+</body>
+</html>
