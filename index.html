@@ -66,6 +66,7 @@ IVA:
 Domicilio de entrega: <input id="domicilio"><br>
 Responsable de recepción: <input id="responsable"><br>
 Teléfono: <input id="telefono"><br>
+Factura vinculada: <input id="fc"><br>
 
 <h3>Items</h3>
 <table id="tabla">
@@ -107,6 +108,8 @@ Cliente: <span id="p_cliente"></span><br>
 CUIT: <span id="p_cuit"></span> - IVA: <span id="p_iva"></span><br>
 Domicilio: <span id="p_dom"></span><br>
 Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span>
+FC vinculada: <span id="p_fc"></span>
+
 </p>
 
 <table id="printTabla"></table>
@@ -155,6 +158,8 @@ Cliente: <span id="p_cliente2"></span><br>
 CUIT: <span id="p_cuit2"></span> - IVA: <span id="p_iva2"></span><br>
 Domicilio: <span id="p_dom2"></span><br>
 Responsable: <span id="p_resp2"></span> - Tel: <span id="p_telcli2"></span>
+FC vinculada: <span id="p_fc"></span>
+
 </p>
 
 <table id="printTabla2"></table>
@@ -224,6 +229,7 @@ function generar(){
   p_dom.innerText=domicilio.value;
   p_resp.innerText=responsable.value;
   p_telcli.innerText=telefono.value;
+  p_fc.innerText=fc.value;
 
   p_cliente2.innerText=cliente.value;
   p_cuit2.innerText=cuit.value;
@@ -231,6 +237,7 @@ function generar(){
   p_dom2.innerText=domicilio.value;
   p_resp2.innerText=responsable.value;
   p_telcli2.innerText=telefono.value;
+  p_fc2.innerText=fc.value;
 
   document.querySelector(".no-print").style.display="none";
   document.querySelector(".print-area").style.display="block";
@@ -241,6 +248,7 @@ agregarFila();
 
 </body>
 </html>
+
 
 
 
