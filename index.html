@@ -6,7 +6,7 @@
 <style>
 body{font-family:Arial;background:#eee;padding:20px}
 .container{max-width:900px;margin:auto;background:white;padding:20px}
-.header{display:flex;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:10px}
+.header{display:flex;justify-content:space-between;border-bottom:2px solid #000;margin-bottom:5px}
 .r-box{text-align:center;border:1px solid #000;padding:5px;width:150px}
 .r-box h1{margin:0;font-size:40px}
 .small{font-size:11px}
@@ -14,7 +14,10 @@ table{width:100%;border-collapse:collapse;margin-top:10px}
 th,td{border:1px solid #000;padding:5px;text-align:center}
 .no-print{}
 .print-area{display:none}
-.box{border:1px solid #000;height:80px;margin-top:10px;padding:5px}
+.box{border:1px solid #000;height:90px;margin-top:10px;padding:5px}
+.copia{page-break-after:always}
+.copia:last-child{page-break-after:auto}
+
 @media print{
   .no-print{display:none}
   .print-area{display:block}
@@ -56,6 +59,7 @@ Teléfono: <input id="telefono"><br>
 <!-- IMPRESION -->
 <div class="print-area" id="printArea">
 
+<div class="copia">
 <div class="header">
   <div style="display:flex;align-items:center;gap:10px;">
     <img src="logo.png" style="height:80px">
@@ -76,6 +80,8 @@ Teléfono: <input id="telefono"><br>
   </div>
 </div>
 
+<div class="small" style="text-align:right;font-weight:bold">ORIGINAL</div>
+
 <p>
 Cliente: <span id="p_cliente"></span><br>
 CUIT: <span id="p_cuit"></span> - IVA: <span id="p_iva"></span><br>
@@ -89,16 +95,64 @@ Responsable: <span id="p_resp"></span> - Tel: <span id="p_telcli"></span>
 <div class="box"></div>
 
 <h4>DETALLES DE LA RECEPCIÓN</h4>
-<div class="box" style="height:100px"></div>
+<div class="box" style="height:120px"></div>
 
 <h4>RECIBÍ CONFORME</h4>
 <div class="box" style="height:60px"></div>
 
 <hr>
 <div class="small">
-ORIGINAL - DUPLICADO TRANSPORTE<br>
 Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
 CAI:50372209069345 Vto. 12/09/2026
+</div>
+</div>
+
+<div class="copia">
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="logo.png" style="height:80px">
+    <div>
+      <b id="p_empresa2"></b><br>
+      CUIT: <span id="p_cuit_emp2"></span><br>
+      IVA: <span id="p_iva_emp2"></span><br>
+      <span id="p_dir2"></span><br>
+      Tel: <span id="p_tel2"></span>
+    </div>
+  </div>
+
+  <div class="r-box">
+    <h1>R</h1>
+    <div class="small">cod. 91</div>
+    <div class="small">Documento no válido como factura de compra</div>
+    <b>Remito N° <span id="p_remito2"></span></b>
+  </div>
+</div>
+
+<div class="small" style="text-align:right;font-weight:bold">DUPLICADO TRANSPORTE</div>
+
+<p>
+Cliente: <span id="p_cliente2"></span><br>
+CUIT: <span id="p_cuit2"></span> - IVA: <span id="p_iva2"></span><br>
+Domicilio: <span id="p_dom2"></span><br>
+Responsable: <span id="p_resp2"></span> - Tel: <span id="p_telcli2"></span>
+</p>
+
+<table id="printTabla2"></table>
+
+<h4>SELLO TRANSPORTISTA</h4>
+<div class="box"></div>
+
+<h4>DETALLES DE LA RECEPCIÓN</h4>
+<div class="box" style="height:120px"></div>
+
+<h4>RECIBÍ CONFORME</h4>
+<div class="box" style="height:60px"></div>
+
+<hr>
+<div class="small">
+Fecha de impresión de respaldo: SEPTIEMBRE (NUM. DEL 0002-0001 AL 0002-0100)<br>
+CAI:50372209069345 Vto. 12/09/2026
+</div>
 </div>
 
 <button onclick="window.print()">IMPRIMIR</button>
@@ -106,18 +160,25 @@ CAI:50372209069345 Vto. 12/09/2026
 </div>
 
 <script>
-let empresa = null;
+let empresa=null;
 
 fetch("empresa.json")
-.then(r => r.json())
-.then(d => {
-  empresa = d;
-  p_empresa.innerText = d.razon;
-  p_cuit_emp.innerText = d["Cuit:"];
-  p_iva_emp.innerText = d.IVA;
-  p_dir.innerText = d.direccion;
-  p_tel.innerText = d.telefono;
-  p_remito.innerText = d.remito;
+.then(r=>r.json())
+.then(d=>{
+  empresa=d;
+  p_empresa.innerText=d.razon;
+  p_cuit_emp.innerText=d["Cuit:"];
+  p_iva_emp.innerText=d.IVA;
+  p_dir.innerText=d.direccion;
+  p_tel.innerText=d.telefono;
+  p_remito.innerText=d.remito;
+
+  p_empresa2.innerText=d.razon;
+  p_cuit_emp2.innerText=d["Cuit:"];
+  p_iva_emp2.innerText=d.IVA;
+  p_dir2.innerText=d.direccion;
+  p_tel2.innerText=d.telefono;
+  p_remito2.innerText=d.remito;
 });
 
 function agregarFila(){
@@ -135,6 +196,7 @@ function generar(){
     html+=`<tr><td>${c}</td><td>${d}</td></tr>`;
   }
   printTabla.innerHTML=html;
+  printTabla2.innerHTML=html;
 
   p_cliente.innerText=cliente.value;
   p_cuit.innerText=cuit.value;
@@ -142,6 +204,13 @@ function generar(){
   p_dom.innerText=domicilio.value;
   p_resp.innerText=responsable.value;
   p_telcli.innerText=telefono.value;
+
+  p_cliente2.innerText=cliente.value;
+  p_cuit2.innerText=cuit.value;
+  p_iva2.innerText=iva.value;
+  p_dom2.innerText=domicilio.value;
+  p_resp2.innerText=responsable.value;
+  p_telcli2.innerText=telefono.value;
 
   document.querySelector(".no-print").style.display="none";
   document.querySelector(".print-area").style.display="block";
